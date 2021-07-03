@@ -17,3 +17,6 @@ Secrets management with user-secrects:
 
 dotnet user-secrets init (download the package)
 dotnet user-secrets set MongoDbSettings:Password Pass#word1 (set variable)
+
+Package for health check of dependend services:
+dotnet add package AspNetCore.HealthChecks.MongoDb
