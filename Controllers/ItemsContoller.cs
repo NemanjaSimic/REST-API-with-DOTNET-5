@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.Controllers
 {
-    //[Route("[controller]")] same as [Route("[item]")]
+    //[Route("[controller]")] same as [Route("[items]")]
     [ApiController]
     [Route("[controller]")]
-    public class ItemController : ControllerBase
+    public class ItemsController : ControllerBase
     {
         private readonly IItemsRepository repository;
 
-        public ItemController(IItemsRepository repository)
+        public ItemsController(IItemsRepository repository)
         {
             this.repository = repository;
         }
@@ -28,7 +28,7 @@ namespace Catalog.Controllers
             return items;
         }
 
-        // GET /item/{id}
+        // GET /items/{id}
         [HttpGet("{id}")]
         public ActionResult<ItemDto> GetItem(Guid id)
         {
