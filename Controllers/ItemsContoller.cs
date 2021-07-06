@@ -6,6 +6,7 @@ using Catalog.Dtos;
 using Catalog.Entities;
 using Catalog.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Catalog.Controllers
 {
@@ -15,10 +16,12 @@ namespace Catalog.Controllers
     public class ItemsController : ControllerBase
     {
         private readonly IItemsRepository repository;
+        private readonly ILogger<ItemsController> logger;
 
-        public ItemsController(IItemsRepository repository)
+        public ItemsController(IItemsRepository repository, ILogger<ItemsController> logger)
         {
             this.repository = repository;
+            this.logger = logger;
         }
 
         // GET /items
@@ -27,6 +30,9 @@ namespace Catalog.Controllers
         {
             var items = (await repository.GetItemsAsync())
                         .Select(item => item.AsDto());
+
+            logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Retrieved {items.Count()} items.");
+
             return items;
         }
 
@@ -40,6 +46,8 @@ namespace Catalog.Controllers
             {
                 return NotFound();
             }
+
+            logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Retrieved item with id: {id.ToString()}.");
 
             return item.AsDto();
         }
@@ -57,6 +65,9 @@ namespace Catalog.Controllers
             };
 
             await repository.CreateItemAsync(item);
+
+            logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Created new item: Name={itemDto.Name}, Price={itemDto.Price}.");
+
 
             return CreatedAtAction(nameof(GetItemAsync), new { id = item.Id }, item.AsDto());
         }
@@ -80,6 +91,8 @@ namespace Catalog.Controllers
 
             await repository.UpdateItemAsync(updatedItem);
 
+            logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Updated item with id {id.ToString()}: Name={itemDto.Name}, Price={itemDto.Price}.");
+
             return NoContent();
         }
 
@@ -95,6 +108,8 @@ namespace Catalog.Controllers
             }
 
             await repository.DeleteItemAsync(id);
+
+            logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Deleted item with id: {id.ToString()}.");
 
             return NoContent();
         }
